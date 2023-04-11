@@ -14,14 +14,21 @@
 <header style="color:white">
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Member Management</a>
+    <a class="navbar-brand">Member Management</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="home">Member</a>
+          <a class="nav-link active" aria-current="page" href="<%=request.getContextPath()%>/list">Member</a>
+        </li>
+      </ul>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="<%=request.getContextPath()%>/adminLogin">Log Out</a>
         </li>
       </ul>
     </div>
@@ -47,7 +54,7 @@
 	 	<h2>Edit Member</h2>
 	 	
 	 </c:if>	
-	
+	<hr>
 	<div class="row mb-3" hidden="hidden">
       <input value="<c:out value="${member.id}"></c:out>" type="text" class="form-control" id="inputHiddenId" name="tbId">
     </div>
@@ -69,6 +76,7 @@
       <input value="<c:out value="${member.mobile}"></c:out>" type="tel" class="form-control" id="inputMobile" name="tbMobile" placeholder="Enter your mobile no." required="required">
     </div>
   </div>
+  <br>
   
   <div>
   <button type="submit" class="btn btn-success">Save</button>

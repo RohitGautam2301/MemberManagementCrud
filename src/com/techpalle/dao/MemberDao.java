@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.techpalle.model.Member;
 
 public class MemberDao {
-	
 	private static final String dbUrl = "jdbc:mysql://localhost:3306/member_management";
 	private static final String dbUsername = "root";
 	private static final String dbPassword = "admin";

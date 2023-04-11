@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.techpalle.dao.AdminDao;
 import com.techpalle.dao.MemberDao;
 import com.techpalle.model.Member;
 
 
 @WebServlet("/")
-public class MemberController extends HttpServlet {
+public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	
@@ -24,10 +25,15 @@ public class MemberController extends HttpServlet {
 		
 		//Calling different methods based on the form actions generated
 		switch(path) {
+		case "/adminLogin":
+			verifyAdmin(request, response);
+			break;
+		case "/list":
+			getCustomerListPage(request, response);
+			break;
 		case "/delete":
 			deleteMember(request,response);
-			break;
-			
+			break;	
 		case "/edit":
 			editMember(request,response);
 			break;
@@ -47,6 +53,41 @@ public class MemberController extends HttpServlet {
 	}
 
 	
+	private void verifyAdmin(HttpServletRequest request, HttpServletResponse response) {
+		//Reading the data from admin-login page
+		String u = request.getParameter("tbUsername");
+		String p = request.getParameter("tbPassword");
+		
+		//Calling the method to verify the admin credentials
+		boolean b = AdminDao.verifyAdmin(u, p);
+		
+		//Redirecting user to appropriate jsp page based on the boolean value returned
+		if(b) {
+			getCustomerListPage(request, response);
+		}
+		else {
+			getStartUpPage(request,response);
+		}
+		
+	}
+
+
+	//Redirect user to admin-login page
+	private void getStartUpPage(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			RequestDispatcher rd = request.getRequestDispatcher("admin-login.jsp");
+			rd.forward(request, response);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		} 
+		catch (ServletException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
 	private void deleteMember(HttpServletRequest request, HttpServletResponse response) {
 		//Read the id from url
 		int i = Integer.parseInt(request.getParameter("id"));
@@ -55,12 +96,7 @@ public class MemberController extends HttpServlet {
 		MemberDao.deleteMember(i);
 		
 		//Redirect user to member-list page
-		try {
-			response.sendRedirect("list");
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		getCustomerListPage(request, response);
 	}
 
 
@@ -78,12 +114,7 @@ public class MemberController extends HttpServlet {
 		MemberDao.editMember(m);
 		
 		//Redirect admin to member-list page
-			try {
-				response.sendRedirect("list");
-			} 
-			catch (IOException e1) {
-				e1.printStackTrace();
-			}
+		getCustomerListPage(request, response);
 	}
 
 
@@ -136,16 +167,17 @@ public class MemberController extends HttpServlet {
 		//Insert the details of a new member in DB
 		MemberDao.addMember(m);
 
-		//Redirect Admin to HomePage (member-list Page)
-		getStartUpPage(request,response);
+		//Redirect admin to member-list page
+		getCustomerListPage(request,response);
 	}
 
 
-	private void getStartUpPage(HttpServletRequest request, HttpServletResponse response) {
+	private void getCustomerListPage(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			//Calling method to get the details of all members and storing the details in collection
 			ArrayList<Member> alMember = MemberDao.getAllMembers();
 			
+			//Redirecting admin to member-list page and setting attribute
 			RequestDispatcher rd = request.getRequestDispatcher("member-list.jsp");
 			request.setAttribute("al", alMember);
 			rd.forward(request, response);
